@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Scorecard - Golf</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .chart-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            position: relative;
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="chart-title">Mental Scorecard - Perfil del Golfista</h1>
+        <div class="chart-container">
+            <canvas id="mentalScorecardChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para el Mental Scorecard
+        const mentalData = {
+            'Gestión del Fallo': 85,
+            'Confianza': 72,
+            'Concentración': 45,
+            'Rutinas Pre-Golpe': 91,
+            'Manejo de Emociones': 38,
+            'Fluidez y Disfrute': 67,
+            'Estrategia Mental': 79
+        };
+
+        // Función para determinar color según valor
+        function getColorByValue(value) {
+            if (value >= 75) return '#27ae60'; // Verde
+            if (value >= 50) return '#e67e22';  // Naranja
+            return '#c0392b'; // Rojo
+        }
+
+        // Ordenar datos de mayor a menor
+        const sortedEntries = Object.entries(mentalData)
+            .sort(([,a], [,b]) => b - a);
+
+        const labels = sortedEntries.map(([label]) => label);
+        const values = sortedEntries.map(([,value]) => value);
+        const colors = values.map(value => getColorByValue(value));
+
+        // Configuración del gráfico
+        const ctx = document.getElementById('mentalScorecardChart').getContext('2d');
+        
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderColor: colors,
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Barras horizontales
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        right: 60 // Espacio para los valores
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Sin leyenda
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.x}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            stepSize: 25
+                        },
+                        grid: {
+                            color: '#e9ecef'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: '#2c3e50'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutCubic'
+                }
+            },
+            plugins: [{
+                id: 'valueLabels',
+                afterDraw: function(chart) {
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    
+                    ctx.font = 'bold 14px Arial';
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    
+                    chart.data.datasets[0].data.forEach((value, index) => {
+                        const meta = chart.getDatasetMeta(0);
+                        const bar = meta.data[index];
+                        
+                        // Posición del texto al final de la barra
+                        const x = bar.x + 8;
+                        const y = bar.y;
+                        
+                        ctx.fillText(value + '%', x, y);
+                    });
+                    
+                    ctx.restore();
+                }
+            }]
+        });
+
+        // Función para actualizar datos (útil para integración)
+        function updateChartData(newData) {
+            const sortedEntries = Object.entries(newData)
+                .sort(([,a], [,b]) => b - a);
+            
+            chart.data.labels = sortedEntries.map(([label]) => label);
+            chart.data.datasets[0].data = sortedEntries.map(([,value]) => value);
+            chart.data.datasets[0].backgroundColor = sortedEntries.map(([,value]) => getColorByValue(value));
+            chart.data.datasets[0].borderColor = sortedEntries.map(([,value]) => getColorByValue(value));
+            
+            chart.update();
+        }
+
+        // Ejemplo de cómo cambiar datos dinámicamente
+        console.log('Para actualizar el gráfico, usa: updateChartData({...nuevosDatos})');
+    </script>
+</body>
+</html>

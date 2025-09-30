@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fitting Mental - Resultados</title>
+  <link rel="icon" type="image/png" href="https://i.ibb.co/JRPSwvtL/Chat-GPT-Image-19-ago-2025-20-14-58.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ============ VARIABLES Y ESTILOS GLOBALES ============ */
+    :root {
+      --primary: #913f8f;
+      --primary-dark: #7a3578;
+      --primary-light: #ab68a9;
+      --primary-ultralight: #f9f5fb;
+      --primary-glow: rgba(145, 63, 143, 0.15);
+      --background: #fcfbfe;
+      --surface: #ffffff;
+      --text-primary: #2c2c2c;
+      --text-secondary: #616161;
+      --gray-light: #f3eff5;
+      --gray-medium: #e4dde6;
+      --error: #c0392b;
+      --success: #27ae60;
+      --warning: #e67e22;
+      --border-radius-lg: 24px;
+      --border-radius-md: 16px;
+      --transition-speed: 0.3s;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ============ ANIMACIONES ============ */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes cta-pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(145, 63, 143, 0.4);
+      }
+
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(145, 63, 143, 0);
+      }
+
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(145, 63, 143, 0);
+      }
+    }
+
+    /* MODIFICADO: Animación del indicador de scroll mejorada */
+    @keyframes bounceHint {
+
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translateX(0);
+      }
+
+      40% {
+        transform: translateX(-15px);
+      }
+
+      60% {
+        transform: translateX(-8px);
+      }
+    }
+
+
+    /* ============ ESTILOS BASE ============ */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--background);
+      color: var(--text-primary);
+      font-size: 17px;
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    /* ============ LAYOUT PRINCIPAL ============ */
+    .container {
+      width: 100%;
+      max-width: 900px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-card {
+      background: var(--surface);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      border: 1px solid var(--gray-medium);
+      position: relative;
+    }
+
+    /* ============ CABECERA ============ */
+    .header {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+    }
+
+    .logo-container {
+      background: var(--surface);
+      display: inline-flex;
+      padding: 1.2rem;
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      max-width: 250px;
+      height: auto;
+      display: block;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    /* ============ PÁGINA DE RESULTADOS ============ */
+    .results-page {
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .section-content {
+      padding: 1.5rem 2rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-content h2 {
+      margin-bottom: 1rem;
+    }
+
+    .section-intro {
+      margin-bottom: 1.5rem;
+      color: var(--text-secondary);
+    }
+
+    /* ============ CONTENEDOR DEL GRÁFICO OPTIMIZADO ============ */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 780px;
+      height: 500px;
+      margin: 0 auto 0.5rem;
+      background: var(--surface);
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 20px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      min-width: 550px;
+      height: 100%;
+    }
+
+    /* MODIFICADO: Estilos del indicador de scroll mejorados */
+    .scroll-indicator {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 1;
+      /* Siempre visible al inicio */
+      z-index: 15;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.5s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      /* Animación mejorada: se ejecuta 3 veces y se detiene */
+      animation: bounceHint 2.5s ease-in-out 3;
+      animation-delay: 1.5s;
+    }
+
+    .scroll-indicator.hidden {
+      opacity: 0;
+      transform: translateY(-20px);
+      pointer-events: none;
+      /* Evita interacciones cuando está oculto */
+    }
+
+
+    /* ============ TARJETAS DE ANÁLISIS ============ */
+    .analysis-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: left;
+      margin-top: 1rem;
+    }
+
+    .analysis-card {
+      background-color: var(--surface);
+      border-radius: var(--border-radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-light);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-header h3 {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .card-score {
+      text-align: right;
+    }
+
+    .score-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .score-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 50px;
+      display: inline-block;
+    }
+
+    .score-label.high {
+      background-color: var(--success);
+    }
+
+    .score-label.medium {
+      background-color: var(--warning);
+    }
+
+    .score-label.low {
+      background-color: var(--error);
+    }
+
+    .card-feedback {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* ============ SECCIÓN CTA MEJORADA ============ */
+    .cta-section {
+      margin-top: 3rem;
+      padding: 3rem 2.5rem;
+      background: var(--gray-light);
+      border-radius: var(--border-radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .cta-content {
+      max-width: 500px;
+    }
+
+    .cta-image {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      border: 5px solid white;
+    }
+
+    .cta-section h3 {
+      font-size: 1.6rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .whatsapp-btn {
+      background-color: #25D366;
+      color: white;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      width: auto;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: cta-pulse 2.5s infinite 1s;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .whatsapp-btn:hover {
+      background-color: #128C7E;
+      transform: translateY(-3px) scale(1.02);
+      animation: none;
+    }
+
+    /* ============ FOOTER MEJORADO Y DISCRETO ============ */
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--gray-light);
+      border-top: 1px solid var(--gray-medium);
+      margin-top: 2rem;
+    }
+
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.7;
+    }
+
+    .legal-section {
+      margin-top: 0.5rem;
+    }
+
+    .legal-toggle {
+      background: none;
+      border: 1px solid var(--gray-medium);
+      border-radius: 20px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.3s ease;
+      opacity: 0.8;
+    }
+
+    .legal-toggle:hover {
+      background: var(--surface);
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+
+    .legal-toggle .toggle-icon {
+      font-size: 0.6rem;
+      transition: transform 0.3s ease;
+    }
+
+    .legal-toggle[aria-expanded="true"] .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .legal-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    .legal-content.expanded {
+      max-height: 200px;
+    }
+
+    .legal-text {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 0.8rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-medium);
+    }
+
+    .legal-text p {
+      margin: 0.3rem 0;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legal-text i {
+      color: var(--primary);
+      font-size: 0.65rem;
+      width: 12px;
+    }
+
+    .legal-text a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .legal-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* ============ BOTÓN WHATSAPP FLOTANTE (AÑADIDO) ============ */
+    .whatsapp-flotante {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      bottom: 25px;
+      right: 25px;
+      background-color: #25D366;
+      color: #FFF;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 30px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .whatsapp-flotante:hover {
+      background-color: #128C7E;
+      transform: scale(1.1);
+    }
+
+    /* ============ DISEÑO RESPONSIVO ============ */
+    @media (max-width: 768px) {
+      body {
+        font-size: 16px;
+        padding: 0;
+      }
+
+      .container {
+        padding: 0;
+        max-width: 100%;
+      }
+
+      .form-card {
+        border-radius: 0;
+        margin: 0;
+        border: none;
+      }
+
+      .section-content {
+        padding: 1.5rem;
+      }
+
+      .chart-container {
+        height: 440px;
+        padding: 15px;
+        margin: 0 auto 0.5rem;
+        overflow-x: auto;
+      }
+
+      .chart-wrapper {
+        min-width: 480px;
+      }
+
+      .scroll-indicator {
+        top: 15px;
+        right: 15px;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+        border-radius: 20px;
+      }
+
+      .cta-section {
+        padding: 2rem 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .cta-image {
+        width: 150px;
+        height: 150px;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .card-score {
+        text-align: left;
+      }
+
+      .analysis-cards-container {
+        margin-top: 1rem;
+      }
+
+      /* Ajuste para el botón flotante en móviles */
+      .whatsapp-flotante {
+        width: 55px;
+        height: 55px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="form-card">
+      <header class="header">
+        <div class="logo-container"><img src="https://i.ibb.co/mC3J6bGJ/Chat-GPT-Image-25-jul-2025-19-58-27.png"
+            alt="Logo de Nuria Elizo" class="logo"></div>
+        <p class="subtitle">Tu Análisis de Rendimiento Mental</p>
+      </header>
+      <main id="results-container"><!-- Los resultados se insertarán aquí dinámicamente --></main>
+    </div>
+    <!-- FOOTER MEJORADO Y DISCRETO -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p class="copyright">© 2025 Nuria Elizo Mental Golf Coach. Todos los derechos reservados.</p>
+        
+        <div class="legal-section">
+          <button class="legal-toggle" id="legalToggle" aria-expanded="false">
+            <i class="fas fa-shield-alt"></i>
+            <span>Política de Privacidad</span>
+            <i class="fas fa-chevron-down toggle-icon"></i>
+          </button>
+          
+          <div class="legal-content" id="legalContent">
+            <div class="legal-text">
+              <p><i class="fas fa-lock"></i> Tu información es <strong>confidencial</strong></p>
+              <p><i class="fas fa-check-circle"></i> Solo para evaluación personal</p>
+              <p><i class="fas fa-ban"></i> No se comparte ni usa comercialmente</p>
+              <p><i class="fas fa-envelope"></i> Eliminación: <a href="mailto:nuriaelizo@golfconcabeza.com">nuriaelizo@golfconcabeza.com</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ICONO DE WHATSAPP FLOTANTE (AÑADIDO) -->
+  <a href="https://wa.me/34606828521?text=Hola%20Nuria,%20he%20hecho%20el%20Fitting%20Mental%20y%20me%20gustaría%20saber%20más."
+    class="whatsapp-flotante" target="_blank" aria-label="Contactar por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const App = {
+        state: {
+          localStorageKey: 'nuriaElizoForm_v24',
+          feedbackTexts: {
+            gestion_fallo: {
+              high: "¡Enhorabuena! Aceptar los errores es tu superpoder. Esta resiliencia te permite mantener la estabilidad y recuperarte rápidamente, una cualidad de los grandes jugadores. Conmigo, podemos trabajar en cómo usar esa fortaleza para convertir los momentos de presión en tus mayores oportunidades.",
+              medium: "Tienes una buena base para gestionar los fallos, pero es probable que a veces la frustración te reste energía. Juntos, podemos crear una 'rutina de reseteo' mental de 10 segundos que te devuelva al presente y te prepare para el siguiente golpe.",
+              low: "Sentir que los errores te afectan es el área donde tienes un potencial de mejora inmenso. Una de las primeras cosas que trabajo con mis golfistas es transformar esa frustración en foco. Imagina lo que cambiaría en tu juego si cada error, en lugar de restarte, te diera más energía."
+            },
+            confianza: {
+              high: "Tu confianza es una de tus grandes armas. Crees en tus capacidades y eso te permite jugar con libertad. Mi trabajo contigo sería ayudarte a blindar esa confianza, para que sea inquebrantable incluso en los días en que el swing no acompaña.",
+              medium: "Muestras una buena confianza, pero es posible que fluctúe bajo presión. Una técnica que enseño es cómo construir una 'confianza de base' que no dependa de los resultados del día, sino de una preparación mental sólida.",
+              low: "La confianza no es algo que se tiene o no se tiene, es algo que se construye. Con unas pocas sesiones, podemos identificar y cambiar los patrones de pensamiento que están limitando tu juego y empezar a construir la confianza que tu golf merece."
+            },
+            concentracion: {
+              high: "Tu capacidad de concentración es de nivel profesional. Sabes cómo anclarte en el presente. El siguiente nivel que podríamos explorar juntos es cómo entrar en 'la zona' de forma más deliberada y mantener ese estado de fluidez durante más tiempo.",
+              medium: "Logras buenos momentos de foco, pero es fácil que la mente se disperse. Trabajo con mis jugadores en técnicas de 'atención selectiva' para enseñar al cerebro a ignorar las distracciones y a centrarse únicamente en la información relevante.",
+              low: "Si sientes que tu mente está en todas partes menos en el golpe que tienes delante, no estás solo/a. Una de las áreas donde mis clientes ven resultados más rápidos es en la mejora del foco. Con ejercicios simples, podemos entrenar tu mente para que sea tu mejor aliada."
+            },
+            rutinas: {
+              high: "Excelente. Tus rutinas son sólidas y te dan una base increíble. Lo que podemos hacer juntos es optimizarlas, añadiendo pequeños anclajes mentales que las hagan aún más potentes bajo presión.",
+              medium: "Tienes rutinas, pero es posible que no siempre te den la seguridad que necesitas. A menudo, el problema no es la rutina en sí, sino lo que pensamos durante ella. Puedo ayudarte a diseñar una rutina mental que te dé una confianza total en cada golpe.",
+              low: "La falta de rutinas es como navegar sin brújula. Es el área de mejora más sencilla y con mayor impacto. En nuestra primera sesión, podemos diseñar una rutina pre-golpe simple y efectiva que te dará un control y confianza inmediatos."
+            },
+            emociones: {
+              high: "Tu inteligencia emocional es una ventaja competitiva enorme. Sabes mantener la calma cuando otros se derrumban. Podemos trabajar en cómo usar esa calma de forma estratégica para tomar decisiones aún más inteligentes en los momentos más tensos.",
+              medium: "Gestionas bien tus emociones, pero es probable que en momentos clave, los nervios aparezcan. Puedo enseñarte técnicas de respiración utilizadas por los profesionales para regular el sistema nervioso y rendir al máximo bajo presión.",
+              low: "Si sientes que las emociones controlan tu tarjeta de resultados, es el momento de actuar. Esta es mi especialidad. Ayudo a golfistas a entender sus emociones y a usar herramientas prácticas para que jueguen a su favor, no en su contra."
+            },
+            disfrute: {
+              high: "¡Felicidades! Disfrutas del juego en su esencia, lo que te permite jugar con libertad. Juntos, podemos explorar cómo potenciar esa sensación de fluidez para que aparezca de forma más consistente.",
+              medium: "Disfrutas del golf, pero es posible que tu disfrute esté demasiado ligado a la puntuación. Puedo ayudarte a cambiar el foco hacia 'objetivos de proceso', lo que no solo aumentará tu disfrute, sino que, paradójicamente, mejorará tus resultados.",
+              low: "Si has perdido parte de la alegría de jugar, es una señal importante. A menudo, esto ocurre cuando la autoexigencia es demasiado alta. Una parte clave de mi trabajo es ayudar a los jugadores a reconectar con su pasión por el golf."
+            },
+            estrategia: {
+              high: "Tu enfoque estratégico es de alto nivel. Piensas el campo como un profesional. El siguiente paso que podríamos trabajar juntos es el análisis avanzado de estadísticas (strokes gained) para afinar aún más tu toma de decisiones.",
+              medium: "Tienes buenas intenciones estratégicas, pero a veces te desvías de tu plan. Puedo ayudarte a crear planes de juego sólidos y, lo más importante, a darte las herramientas mentales para mantenerte fiel a ellos.",
+              low: "Si sientes que tu juego es más reactivo que planificado, has encontrado una mina de oro para bajar golpes. Puedo enseñarte un sistema simple para analizar los hoyos y tomar decisiones más inteligentes que se ajusten a tus fortalezas."
+            }
+          }
+        },
+
+        init() {
+          if (document.getElementById('results-container')) {
+            this.initResults();
+          }
+        },
+
+        initResults() {
+          const dataJSON = sessionStorage.getItem(this.state.localStorageKey);
+          const resultsContainer = document.getElementById('results-container');
+          if (!dataJSON) {
+            resultsContainer.innerHTML = `<div class="section-content"><p class="section-intro">No hemos encontrado tus resultados. Por favor, completa primero el <a href="index.html">Fitting Mental</a>.</p></div>`;
+            return;
+          }
+          this.state.formData = JSON.parse(dataJSON);
+          this.displayResultsPage();
+        },
+
+        displayResultsPage() {
+          const scores = this.calculateScores();
+          const userName = this.state.formData.nombre ? this.state.formData.nombre.split(' ')[0] : 'Golfista';
+          const resultsContainer = document.getElementById('results-container');
+          resultsContainer.innerHTML = `
+            <div class="section-content results-page">
+              <h2>¡Aquí tienes tu Análisis, ${userName}!</h2>
+              <p class="section-intro">Este es un mapa de tu estado mental actual. Úsalo para identificar tus fortalezas y áreas con mayor potencial de crecimiento.</p>
+
+              <div class="chart-container">
+                <div class="chart-wrapper">
+                  <canvas id="resultsChart"></canvas>
+                </div>
+                <!-- MODIFICADO: HTML del indicador con nuevo icono y texto -->
+                <div class="scroll-indicator" id="scrollHint">
+                    <i class="fa-solid fa-arrows-left-right"></i>
+                    <span>Desliza para ver</span>
+                </div>
+              </div>
+
+              <div class="analysis-cards-container">${this.generateAnalysisCards(scores)}</div>
+
+              <div class="cta-section">
+                  <img src="https://i.ibb.co/RVHxztb/8.png" alt="Nuria Elizo" class="cta-image">
+                  <div class="cta-content">
+                      <h3>¿Quieres llevar tu juego al siguiente nivel?</h3>
+                      <p>Soy Nuria Elizo, psicóloga deportiva. He analizado tus resultados y veo un gran potencial. Si quieres, podemos hablar sobre cómo crear un plan específico para ti.</p>
+                      <a href="https://wa.me/34606828521?text=Hola%20Nuria,%20he%20hecho%20el%20Fitting%20Mental%20y%20me%20gustaría%20saber%20más." target="_blank" class="whatsapp-btn">
+                          <i class="fab fa-whatsapp"></i> WhatsApp
+                      </a>
+                  </div>
+              </div>
+            </div>`;
+          this.renderChart(scores);
+        },
+
+        calculateScores() {
+          const scores = {};
+          let totalScore = 0;
+          let sectionCount = 0;
+
+          const sections = [
+            {id: 'gestion_fallo', title: 'Gestión del Fallo', questions: 3},
+            {id: 'confianza', title: 'Confianza', questions: 3},
+            {id: 'concentracion', title: 'Concentración', questions: 3},
+            {id: 'rutinas', title: 'Tus Rutinas', questions: 3},
+            {id: 'emociones', title: 'Manejo de Emociones', questions: 3},
+            {id: 'disfrute', title: 'Fluidez y Disfrute', questions: 3},
+            {id: 'estrategia', title: 'Estrategia y Preparación', questions: 3}
+          ];
+
+          sections.forEach(section => {
+            let sectionScore = 0;
+            for (let qIndex = 0; qIndex < section.questions; qIndex++) {
+              const questionId = `${section.id}_q${qIndex}`;
+              sectionScore += parseInt(this.state.formData[questionId] || 0, 10);
+            }
+            const maxScore = section.questions * 4;
+            const minScore = section.questions;
+            const percentage = Math.round(((sectionScore - minScore) / (maxScore - minScore)) * 100);
+            scores[section.id] = {title: section.title, score: percentage, id: section.id};
+            totalScore += percentage;
+            sectionCount++;
+          });
+
+          scores.global = Math.round(totalScore / sectionCount);
+          return scores;
+        },
+
+        generateAnalysisCards(scores) {
+          let cardsHTML = '';
+          const sections = [
+            'gestion_fallo', 'confianza', 'concentracion',
+            'rutinas', 'emociones', 'disfrute', 'estrategia'
+          ];
+
+          sections.forEach(sectionId => {
+            if (scores[sectionId]) {
+              cardsHTML += this.createCardHTML(scores[sectionId]);
+            }
+          });
+          return cardsHTML;
+        },
+
+        createCardHTML(scoreData) {
+          const {title, score, id} = scoreData;
+          let level = 'low';
+          if (score >= 75) level = 'high';
+          else if (score >= 50) level = 'medium';
+
+          const feedback = this.state.feedbackTexts[id][level];
+          return `
+            <div class="analysis-card">
+              <div class="card-header">
+                <h3>${title}</h3>
+                <div class="card-score">
+                  <div class="score-value">${score}%</div>
+                  <span class="score-label ${level}">${level.toUpperCase()}</span>
+                </div>
+              </div>
+              <p class="card-feedback">${feedback}</p>
+            </div>`;
+        },
+
+        renderChart(scores) {
+          const ctx = document.getElementById('resultsChart').getContext('2d');
+
+          // Preparar datos de las secciones
+          const sections = [
+            'gestion_fallo', 'confianza', 'concentracion',
+            'rutinas', 'emociones', 'disfrute', 'estrategia'
+          ];
+
+          const chartData = sections.map(s => ({
+            title: scores[s]?.title || '',
+            score: scores[s]?.score || 0
+          }));
+
+          // Ordenar de mayor a menor
+          const sortedData = chartData.sort((a, b) => b.score - a.score);
+
+          const labels = sortedData.map(item => item.title);
+          const data = sortedData.map(item => item.score);
+
+          // Función para determinar color según valor
+          function getColorByValue(value) {
+            if (value >= 75) return '#27ae60'; // Verde
+            if (value >= 50) return '#e67e22';  // Naranja
+            return '#c0392b'; // Rojo
+          }
+
+          const backgroundColors = data.map(value => getColorByValue(value));
+
+          // Detectar si es móvil
+          const isMobile = window.innerWidth <= 768;
+
+          // Ajustar el ancho dinámicamente para scroll horizontal
+          const chartWrapper = document.querySelector('.chart-wrapper');
+          const dynamicWidth = Math.max(550, data.length * 90);
+          chartWrapper.style.minWidth = `${dynamicWidth}px`;
+
+          // Crear gráfico de barras horizontales
+          const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: backgroundColors,
+                borderWidth: 0,
+                borderRadius: {
+                  topLeft: 6,
+                  topRight: 6,
+                  bottomLeft: 6,
+                  bottomRight: 6
+                },
+                borderSkipped: false
+              }]
+            },
+            options: {
+              indexAxis: 'y', // Barras horizontales
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: {
+                intersect: false,
+                mode: 'nearest'
+              },
+              layout: {
+                padding: {
+                  right: isMobile ? 60 : 80,
+                  left: 10,
+                  top: 10,
+                  bottom: 10
+                }
+              },
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  enabled: true,
+                  backgroundColor: 'rgba(0,0,0,0.8)',
+                  titleColor: '#fff',
+                  bodyColor: '#fff',
+                  cornerRadius: 8,
+                  displayColors: false,
+                  callbacks: {
+                    title: function (context) {
+                      return context[0].label;
+                    },
+                    label: function (context) {
+                      return `Puntuación: ${context.parsed.x}%`;
+                    },
+                    afterLabel: function (context) {
+                      const score = context.parsed.x;
+                      if (score >= 75) return '🟢 Nivel Alto';
+                      if (score >= 50) return '🟡 Nivel Medio';
+                      return '🔴 Nivel Bajo';
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    callback: function (value) {
+                      return value + '%';
+                    },
+                    stepSize: 25,
+                    font: {
+                      family: 'Poppins',
+                      size: isMobile ? 10 : 12
+                    },
+                    color: '#666'
+                  },
+                  grid: {
+                    color: '#e9ecef',
+                    lineWidth: 1
+                  },
+                  border: {
+                    color: '#ddd'
+                  }
+                },
+                y: {
+                  ticks: {
+                    font: {
+                      family: 'Poppins',
+                      size: isMobile ? 11 : 14,
+                      weight: '600'
+                    },
+                    color: '#2c3e50',
+                    padding: 8,
+                    maxRotation: 0
+                  },
+                  grid: {
+                    display: false
+                  },
+                  border: {
+                    display: false
+                  }
+                }
+              },
+              animation: {
+                duration: 1500,
+                easing: 'easeOutCubic'
+              }
+            },
+            plugins: [{
+              id: 'valueLabels',
+              afterDraw: function (chart) {
+                const ctx = chart.ctx;
+                ctx.save();
+
+                ctx.font = `bold ${isMobile ? '12px' : '14px'} Poppins`;
+                ctx.fillStyle = '#2c3e50';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+
+                chart.data.datasets[0].data.forEach((value, index) => {
+                  const meta = chart.getDatasetMeta(0);
+                  const bar = meta.data[index];
+
+                  if (bar) {
+                    const x = bar.x + (isMobile ? 6 : 8);
+                    const y = bar.y;
+
+                    // Añadir fondo semitransparente al texto
+                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                    const textWidth = ctx.measureText(value + '%').width;
+                    ctx.fillRect(x - 2, y - 8, textWidth + 4, 16);
+
+                    // Dibujar el texto
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.fillText(value + '%', x, y);
+                  }
+                });
+
+                ctx.restore();
+              }
+            }]
+          });
+
+          // MODIFICADO: Gestión del scroll indicator mejorada y persistente
+          const scrollIndicator = document.getElementById('scrollHint');
+          const chartContainer = document.querySelector('.chart-container');
+
+          if (scrollIndicator && chartContainer) {
+            const hasScrolled = sessionStorage.getItem('chartScrolled');
+
+            // Si el usuario ya ha deslizado en esta sesión, oculta el indicador inmediatamente.
+            if (hasScrolled) {
+              scrollIndicator.style.display = 'none';
+            } else {
+              // Función para ocultar permanentemente el indicador
+              const hideIndicatorPermanently = () => {
+                scrollIndicator.classList.add('hidden');
+
+                // Guardar en la memoria de la sesión que el usuario ya ha deslizado.
+                sessionStorage.setItem('chartScrolled', 'true');
+
+                // Limpiar el event listener para que no se ejecute más.
+                chartContainer.removeEventListener('scroll', hideIndicatorPermanently);
+              };
+
+              // Añadir el listener que se activa SOLO la primera vez que el usuario desliza.
+              chartContainer.addEventListener('scroll', hideIndicatorPermanently, {once: true});
+            }
+          }
+
+          return chart;
+        }
+      };
+
+      App.init();
+      
+      // Funcionalidad del footer colapsible
+      function initLegalToggle() {
+          const legalToggle = document.getElementById('legalToggle');
+          const legalContent = document.getElementById('legalContent');
+          
+          if (legalToggle && legalContent) {
+              let autoCloseTimer = null;
+              
+              // Mejoras de accesibilidad
+              legalToggle.setAttribute('aria-controls', 'legalContent');
+              legalContent.setAttribute('role', 'region');
+              legalContent.setAttribute('aria-labelledby', 'legalToggle');
+              
+              // Verificar si es la primera visita para mostrar automáticamente
+              const hasSeenLegal = localStorage.getItem('hasSeenLegal');
+              
+              if (!hasSeenLegal) {
+                  // Primera visita - mostrar automáticamente y marcar como visto
+                  setTimeout(() => {
+                      legalContent.classList.add('expanded');
+                      legalToggle.setAttribute('aria-expanded', 'true');
+                      localStorage.setItem('hasSeenLegal', 'true');
+                      
+                      // Auto-colapsar después de 5 segundos, pero cancelable
+                      autoCloseTimer = setTimeout(() => {
+                          legalContent.classList.remove('expanded');
+                          legalToggle.setAttribute('aria-expanded', 'false');
+                      }, 5000);
+                  }, 1000);
+              }
+              
+              legalToggle.addEventListener('click', () => {
+                  // Cancelar autocierre si el usuario interactúa
+                  if (autoCloseTimer) {
+                      clearTimeout(autoCloseTimer);
+                      autoCloseTimer = null;
+                  }
+                  
+                  const isExpanded = legalToggle.getAttribute('aria-expanded') === 'true';
+                  
+                  if (isExpanded) {
+                      legalContent.classList.remove('expanded');
+                      legalToggle.setAttribute('aria-expanded', 'false');
+                  } else {
+                      legalContent.classList.add('expanded');
+                      legalToggle.setAttribute('aria-expanded', 'true');
+                  }
+              });
+          }
+      }
+      
+      // Inicializar toggle legal
+      initLegalToggle();
+    });
+  </script>
+</body>
+
+</html>
